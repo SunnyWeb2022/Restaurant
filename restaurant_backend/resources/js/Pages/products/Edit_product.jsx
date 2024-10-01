@@ -9,20 +9,20 @@ export default function Edit_product({ auth }) {
 
     const product = usePage().props.edit_product;
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
         id:product.id,
         title: product.title,
         description: product.description,
-        image: '',
+        image: product.image,
         price: product.price,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(data);
 
         // Create a FormData object
         const formData = new FormData();
+        
         formData.append('id', data.id);
         formData.append('title', data.title);
         formData.append('description', data.description);
@@ -30,7 +30,7 @@ export default function Edit_product({ auth }) {
         formData.append('price', data.price);
 
         // Send the patch request
-        put(route('update_product', data.id),formData);
+        post(route('update_product', data.id),formData);
  
     };
 

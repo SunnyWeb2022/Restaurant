@@ -43,7 +43,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/Show_product', [ProductController::class, 'laravelindex'])->name('Show_product');
     Route::post('/edit-product', [ProductController::class, 'edit'])->name('edit_product');
     Route::get('/products/edit/{id}', [ProductController::class, 'showEditPage'])->name('products.edit');
-    Route::put('/products/{id}', [ProductController::class, 'update'])->name('update_product');
+    Route::post('/products/{id}', [ProductController::class, 'update'])->name('update_product');
     Route::post('/products', [ProductController::class, 'destroy'])->name('delete_product');
 
 

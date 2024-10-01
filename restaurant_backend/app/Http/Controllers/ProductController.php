@@ -73,19 +73,15 @@ class ProductController extends Controller
      */
     public function edit(Request $request)
     {
-        // Fetch the product based on the ID
         $editid = $request->input('id');
         $product = Product::find($editid);
-        // Redirect to the Inertia page with the product data
         return redirect()->route('products.edit', ['id' => $editid]);
     }
 
     public function showEditPage($id)
     {
-        // Fetch the product
         $product = Product::find($id);
 
-        // Render the Inertia page with the product data
         return Inertia::render('products/Edit_product', [
             'edit_product' => $product
         ]);
@@ -96,52 +92,29 @@ class ProductController extends Controller
      */
     public function update(Request $request,$id)
 {
-    
-    // Find the product by ID
+
     $product = Product::find($id);
 
-    // dd($product->image);
-
-    // $imageName = ''; 
-
-    // if ($request->hasFile('image')) {
-    //     $image = $request->image;
-    //     dd($image);
-    //     $destinationPath = public_path('/images/products');
-    //     $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension(); 
-    //     $image->move($destinationPath, $imageName);
-
-        
-    // }
-
-    // $product->update([
-    //     'title' => $request->title,
-    //     'description' => $request->description,
-    //     'image' => $imageName,
-    //     'price' => $request->price,
-    // ]);
-
-    // Update product details
-    $product->title = $request->title;
-    $product->description = $request->description;
-    $product->price = $request->price;
-
-    
-    // Handle the image upload
     if ($request->hasFile('image')) {
-        // Delete the old image if it exists
-        // dd($product->image);
-        if ($product->image) {
-            Storage::delete($product->image); // Adjust path if necessary
+        if ($product->image && file_exists(public_path('/images/products/' . $product->image))) {
+            unlink(public_path('/images/products/' . $product->image));
         }
 
-        // Store the new image
-        $path = $request->file('image')->store('images/products', 'public');
-        $product->image = $path; // Save the path in the database
+        $image = $request->image;
+        $destinationPath = public_path('/images/products');
+        $imageName = time() . '-' . uniqid() . '.' . $image->getClientOriginalExtension();
+        $image->move($destinationPath, $imageName);
+    } else {
+        $imageName = $product->image;
     }
 
-    // Save the updated product
-    $product->save();
+    $product->update([
+        'title' => $request->title,
+        'description' => $request->description,
+        'image' => $imageName,
+        'price' => $request->price,
+    ]);
+
 
 
     
